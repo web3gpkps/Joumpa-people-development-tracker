@@ -11,7 +11,8 @@
 --
 -- Replace the two placeholders first. Never commit the real values:
 --   <APP_URL>      https://joumpa-people-development-tracker.vercel.app   (no trailing slash)
---   <SYNC_SECRET>  the same value as v2's SYNC_SECRET env var on Vercel (NOT v1's)
+--   <SYNC_SECRET>  v2's SYNC_PING_SECRET (least privilege: it can only start a run; SYNC_SECRET also works).
+--                  Never v1's secrets.
 
 -- 1. Vault secrets read by private.pd_sync_ping() and by the cron job below.
 select vault.create_secret('<APP_URL>/api/sync/run', 'pd_sync_run_url', 'JOUMPA PD: Sheets sync endpoint');
@@ -43,7 +44,7 @@ select cron.schedule(
 --   select * from cron.job_run_details order by start_time desc limit 10;
 --   select last_success_at, last_error, failures, last_ping_at from public.pd_sync_state;
 --
--- Rotate the secret (then update v2's SYNC_SECRET on Vercel and redeploy):
+-- Rotate the secret (then update v2's SYNC_PING_SECRET on Vercel and redeploy):
 --   select vault.update_secret((select id from vault.secrets where name = 'pd_sync_secret'), '<NEW_SYNC_SECRET>');
 -- Change the URL (e.g. after a domain move):
 --   select vault.update_secret((select id from vault.secrets where name = 'pd_sync_run_url'), '<APP_URL>/api/sync/run');
