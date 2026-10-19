@@ -1,0 +1,35 @@
+/*
+ * Tracker Staf: the columns PIC / CS Division fill in sit on a light cream, as in the workbook
+ * ("kolom krem"). Report data stays white and computed cells stay sunken (grid.css). The cream
+ * is a surface, never a text colour: ink on it is 14.2:1, ink-muted 6.2:1.
+ */
+@layer theme, base, components, utilities;
+
+@layer components {
+  .tracker-staf {
+    --pic-input: #fbf3df;
+    --pic-input-line: #e3cf9c;
+  }
+
+  /* A cell rendered with [data-pic-input] (fields.ts PIC_KEYS); selection and errors keep their own look. */
+  .tracker-staf .dg td[data-cell]:has([data-pic-input]):not([data-selected]):not([data-invalid]) {
+    background-color: var(--pic-input);
+  }
+
+  .tracker-staf .pic-swatch {
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: var(--radius-status);
+    border: 1px solid var(--pic-input-line);
+    background-color: var(--pic-input);
+  }
+
+  /* The PIC section of the detail dialog: the same cream, as a quiet band. */
+  .pic-section {
+    --pic-input: #fbf3df;
+    --pic-input-line: #e3cf9c;
+    background-color: var(--pic-input);
+    border: 1px solid var(--pic-input-line);
+  }
+}

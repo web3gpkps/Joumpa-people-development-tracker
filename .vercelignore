@@ -1,0 +1,5 @@
+*.xlsx
+/supabase/
+/scripts/
+.env
+.env*

@@ -1,0 +1,216 @@
+/*
+ * DataGrid styles (components/grid/DataGrid.tsx), loaded only where a grid renders.
+ * The layer order statement matches Tailwind's, so this file's `components` layer keeps
+ * its place (after base, before utilities) even if it loads before globals.css.
+ */
+@layer theme, base, components, utilities;
+
+/*
+ * DataGrid (components/grid/DataGrid.tsx): bulk entry.
+ * Editable cells are white (a --line-strong edge on hover), computed cells sit on
+ * --surface-sunken in --ink-muted; the toolbar legend ("Isian" / "Dihitung otomatis") is the
+ * second cue. Identity columns (frozen ID / Nama) and row actions stay white.
+ * Frozen columns and header rows stick inside the grid's own scroll box; their offsets
+ * come from inline styles (left / top) because widths are per column.
+ */
+@layer components {
+  .dg-scroll {
+    position: relative;
+    overflow: auto;
+    overscroll-behavior: contain;
+    background-color: var(--surface);
+  }
+
+  .dg {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+  }
+
+  .dg th,
+  .dg td {
+    height: 2.25rem; /* 36px entry rows (DESIGN.md Density) */
+    padding: 0 0.5rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background-color: var(--surface);
+    color: var(--ink);
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  /* Cells stay overflow-visible (the error message and long-text editor hang below);
+     the text inside clips with an ellipsis instead. */
+  .dg-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dg thead th {
+    overflow: hidden;
+    position: sticky;
+    z-index: 2;
+    height: 2.25rem;
+    background-color: var(--surface-sunken);
+    color: var(--ink-muted);
+    font-weight: 600;
+    white-space: normal;
+    line-height: 1.1rem;
+    border-bottom-color: var(--line-strong);
+  }
+
+  .dg thead th[data-group] {
+    text-align: center;
+    color: var(--ink);
+  }
+
+  .dg thead th[data-highlight] {
+    background-color: var(--brand-tint);
+    color: var(--ink);
+    box-shadow: inset 0 -2px 0 var(--brand);
+  }
+
+  .dg [data-frozen] {
+    position: sticky;
+    z-index: 1;
+  }
+
+  .dg thead [data-frozen] {
+    z-index: 3;
+  }
+
+  .dg [data-frozen-last] {
+    box-shadow: inset -1px 0 0 var(--line-strong);
+  }
+
+  /* Computed cells of an editable grid. A fully read-only grid stays white. */
+  .dg[data-editable-grid] td[data-cell]:not([data-editable]):not([data-frozen]):not(:has([data-grid-control])) {
+    background-color: var(--surface-sunken);
+    color: var(--ink-muted);
+  }
+
+  .dg td[data-editable]:hover:not([data-active]):not([data-selected]):not([data-invalid]) {
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+
+  .dg [data-numeric] {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dg td[data-selected],
+  .dg th[data-selected] {
+    background-color: var(--brand-tint);
+  }
+
+  .dg [data-cell] {
+    cursor: cell;
+    outline: none;
+    user-select: none;
+  }
+
+  /* Containing block for the editor and the message; frozen cells already are (sticky). */
+  .dg [data-cell]:not([data-frozen]) {
+    position: relative;
+  }
+
+  .dg-editor,
+  .dg-popover {
+    user-select: text;
+  }
+
+  /*
+   * A dialog opened from a cell (row actions) is a descendant of that cell, so it would
+   * inherit the cell's nowrap, small type, alignment and cell cursor. Reset them here once.
+   */
+  .dg dialog {
+    white-space: normal;
+    text-align: left;
+    font-size: var(--text-sm);
+    font-weight: 400;
+    line-height: var(--text-sm--line-height);
+    cursor: auto;
+    user-select: text;
+  }
+
+  .dg [data-cell]:focus-visible {
+    outline: none;
+  }
+
+  /* Active cell: 2 px --brand while the grid has focus, a quieter ring otherwise. */
+  .dg [data-active] {
+    box-shadow: inset 0 0 0 2px var(--line-strong);
+  }
+
+  .dg:focus-within [data-active] {
+    box-shadow: inset 0 0 0 2px var(--brand);
+  }
+
+  .dg [data-invalid] {
+    box-shadow: inset 0 0 0 2px var(--critical);
+  }
+
+  .dg:focus-within [data-active][data-invalid] {
+    box-shadow:
+      inset 0 0 0 2px var(--critical),
+      inset 0 0 0 4px var(--surface);
+  }
+
+  .dg-status {
+    text-align: center !important;
+    padding: 0 !important;
+  }
+
+  .dg-editor {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--brand);
+    border-radius: 0;
+    background-color: var(--surface);
+    color: var(--ink);
+    padding: 0 0.4375rem;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dg-editor:focus-visible {
+    outline: none;
+  }
+
+  .dg-message {
+    position: absolute;
+    left: -2px;
+    top: calc(100% - 2px);
+    z-index: 5;
+    width: max-content;
+    max-width: 18rem;
+    white-space: normal;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-control);
+    background-color: var(--critical);
+    color: #ffffff;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  /* Fixed and placed by the editor (CellEditor), so the grid's scroll box cannot clip it. */
+  .dg-popover {
+    position: fixed;
+    z-index: 30;
+    white-space: normal;
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-panel);
+    background-color: var(--surface);
+    box-shadow: var(--shadow-float);
+    cursor: auto;
+  }
+}

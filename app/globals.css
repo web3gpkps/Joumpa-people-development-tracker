@@ -1,0 +1,1615 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens from DESIGN.md (light only; printed reports are light too).
+ * Raw tokens keep the DESIGN.md names; @theme maps them to Tailwind utilities
+ * (bg-bg, bg-surface, bg-surface-sunken, text-ink, border-line-strong, bg-brand, text-critical, ...).
+ * The default Tailwind palette, radii, shadows, weights and animations are cleared on purpose
+ * so screens can only use the agreed system. Ratios are WCAG 2 contrast.
+ *
+ * Depth is borders only (1px --line). --shadow-float is reserved for menus, popovers,
+ * dialogs and the phone menu sheet.
+ */
+:root {
+  color-scheme: light;
+
+  --bg: #f4f8f6; /* page */
+  --surface: #ffffff; /* panels, tables, inputs, editable grid cells */
+  --surface-sunken: #eef4f1; /* table headers, computed (read-only) cells */
+  --ink: #172a24; /* 15.1:1 on surface */
+  --ink-muted: #4b6058; /* 6.75:1 on surface, 6.05:1 on sunken */
+  --line: #dfe8e4; /* dividers only */
+  --line-strong: #71857c; /* control borders, 3.93:1 on surface; never on sunken */
+  --brand: #0f6b4a; /* deep emerald: primary button, focus ring; white on it 6.52:1, 6.13:1 on bg */
+  --brand-strong: #0b5a3e; /* hover / pressed; white on it 8.25:1 */
+  --brand-tint: #e3f2ea; /* selected row, ghost hover; brand on it 5.63:1 */
+  --navy: #0f2f26; /* deep Gapura green: sidebar and hero base; white on it 14.4:1 */
+  --navy-deep: #0c2a21;
+  --hero-end: #15684a;
+  --accent: #0e7a53; /* the "now" label and inline links; 5.35:1 */
+  --accent-bright: #3fae7a; /* Gapura mark emerald, non-text only (2.78:1): the "now" dot, the logo rule */
+
+  /* Status tones: text on its own tint. */
+  --good: #1d6b40; /* 5.69:1 */
+  --good-tint: #e6f3ea;
+  --warning: #8a4b00; /* 6.07:1 */
+  --warning-tint: #fdf1d8;
+  --critical: #a1261b; /* 6.28:1 */
+  --critical-strong: #8a1f16; /* hover / pressed for danger buttons */
+  --critical-tint: #fbe7e3;
+  --progress: #6b3fa0; /* 6.32:1 */
+  --progress-tint: #f1ebf8;
+  --neutral: #535b68; /* 5.9:1 */
+  --neutral-tint: #eaf0ed;
+
+  /* Shell metrics (DESIGN.md Shell and navigation). */
+  --sidebar-width: 232px;
+  --topbar-height: 56px;
+  --bottombar-height: 56px;
+}
+
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  --font-weight-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --animate-*: initial;
+  --blur-*: initial;
+
+  --color-white: #ffffff;
+
+  /* Two weights only (DESIGN.md Typography). font-medium and font-bold do not exist. */
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+
+  /*
+   * Type scale (DESIGN.md): caption 13/18, body 14/20, phone inputs and section titles 16/24,
+   * page title 20/28. text-lg is the section title, text-xl the page title; text-2xl is kept
+   * as an alias of text-xl so older screens cannot grow past the page title size.
+   */
+  --text-xs: 0.8125rem; /* 13 */
+  --text-xs--line-height: 1.125rem; /* 18 */
+  --text-sm: 0.875rem; /* 14 */
+  --text-sm--line-height: 1.25rem; /* 20 */
+  --text-base: 1rem; /* 16 */
+  --text-base--line-height: 1.5rem; /* 24 */
+  --text-lg: 1rem; /* 16 section title */
+  --text-lg--line-height: 1.5rem;
+  --text-xl: 1.25rem; /* 20 page title */
+  --text-xl--line-height: 1.75rem; /* 28 */
+  --text-2xl: 1.25rem; /* alias of xl */
+  --text-2xl--line-height: 1.75rem;
+
+  /* Shape: 6 controls, 8 panels and dialogs, 4 status labels. No pills. */
+  --radius-control: 10px;
+  --radius-panel: 14px;
+  --radius-status: 6px;
+
+  --shadow-card: 0 8px 28px rgb(17 47 62 / 0.055);
+  --shadow-float: 0 12px 32px -8px rgb(28 36 51 / 0.2), 0 2px 6px rgb(28 36 51 / 0.08);
+
+  /* DataGrid switches to phone cards under 900px (components/grid/useNarrowViewport.ts). */
+  --breakpoint-grid: 56.25rem;
+}
+
+@theme inline {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --color-bg: var(--bg);
+  /* Deprecated alias of bg (older screens use bg-paper / hover:bg-paper). Prefer bg-bg. */
+  --color-paper: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-navy: var(--navy);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-tint: var(--brand-tint);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+
+  --color-good: var(--good);
+  --color-good-tint: var(--good-tint);
+  --color-warning: var(--warning);
+  --color-warning-tint: var(--warning-tint);
+  --color-critical: var(--critical);
+  --color-critical-strong: var(--critical-strong);
+  --color-critical-tint: var(--critical-tint);
+  --color-progress: var(--progress);
+  --color-progress-tint: var(--progress-tint);
+  --color-neutral: var(--neutral);
+  --color-neutral-tint: var(--neutral-tint);
+}
+
+@layer base {
+  html {
+    background-color: var(--bg);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    font-weight: 400;
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* One focus ring everywhere: 2px emerald outline (6.13:1 on bg, 5.63:1 on brand-tint). */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--brand-tint);
+    color: var(--ink);
+  }
+
+  /* Numbers, dates and codes line up everywhere. */
+  time,
+  input[inputmode="numeric"],
+  input[inputmode="decimal"],
+  [data-numeric],
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+/* MOTION 1: colour and outline transitions of at most 120ms, none for people who opt out. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  /* Page hero: deep Gapura green to emerald banner at the top of every page. */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    color: #ffffff;
+    background: linear-gradient(115deg, var(--navy-deep), #124a3a 65%, var(--hero-end));
+    box-shadow: 0 9px 25px rgb(18 60 82 / 0.09);
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    right: -45px;
+    top: -125px;
+    width: 360px;
+    height: 360px;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 50px rgb(255 255 255 / 0.03),
+      0 0 0 105px rgb(255 255 255 / 0.027);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #b7eed4;
+  }
+
+  /* Section labels and nav group headings: sentence case, 13/600, muted. Never uppercase. */
+  .section-label {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  /* Station codes (SUB, DPS): the identity motif. Tabular semibold, never letter-spaced. */
+  .station-code {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+
+  /* Native select with a drawn chevron; the control keeps its 3.8:1 border. */
+  .nav-label {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a3c4b5; /* 7.6:1 on the sidebar green */
+  }
+
+  .select-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%234d6070' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px 8px;
+    padding-right: 2.25rem;
+  }
+
+  /*
+   * DataTable: the table scrolls inside its own container (the page never scrolls
+   * sideways), the header row sticks to the top of that container and the first
+   * column sticks to its left edge.
+   */
+  .dt-scroll {
+    position: relative;
+    overflow: auto;
+    overscroll-behavior-x: contain;
+    background-color: var(--surface);
+  }
+
+  .dt {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+
+  .dt[data-density="dense"] {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+  }
+
+  .dt th,
+  .dt td {
+    padding: 0.5rem 0.75rem;
+    height: 2.5rem; /* 40px rows */
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: middle;
+    background-color: var(--surface);
+  }
+
+  .dt[data-density="dense"] th,
+  .dt[data-density="dense"] td {
+    padding: 0.375rem 0.625rem;
+    height: 2.25rem;
+  }
+
+  .dt thead th {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    font-weight: 600;
+    color: var(--ink-muted);
+    white-space: nowrap;
+    background-color: var(--surface-sunken);
+  }
+
+  .dt[data-sticky-header="true"] thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .dt[data-sticky-first="true"] tr:not([data-empty]) > :first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    box-shadow: inset -1px 0 0 var(--line);
+  }
+
+  .dt[data-sticky-first="true"][data-sticky-header="true"] thead tr > :first-child {
+    z-index: 3;
+  }
+
+  /*
+   * Phones: cap the sticky column so it never covers the data it is pinned beside.
+   * A fixed width (not max-width, which table cells ignore) keeps it at 40% of the
+   * screen; long names wrap instead.
+   */
+  @media (width < 40rem) {
+    .dt[data-sticky-first="true"] tr:not([data-empty]) > :first-child {
+      width: 40vw;
+      min-width: 8rem;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .dt tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  .dt [data-numeric] {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dt tbody tr:hover > * {
+    background-color: var(--bg);
+  }
+
+  .dt tbody tr[data-selected="true"] > * {
+    background-color: var(--brand-tint);
+  }
+}
+
+/*
+ * Buttons on dark surfaces (hero actions, navy sidebar). Unlayered on purpose: it must beat
+ * the Tailwind utilities on the buttons. Child combinators keep dialogs inside them untouched.
+ */
+.hero-actions > [data-variant] {
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background-color: rgb(255 255 255 / 0.1);
+  color: #ffffff;
+}
+.hero-actions > [data-variant]:hover {
+  background-color: rgb(255 255 255 / 0.2);
+}
+.hero-actions > [data-variant="primary"] {
+  border-color: #ffffff;
+  background-color: #ffffff;
+  color: #0b5a3e;
+}
+.hero-actions > [data-variant="primary"]:hover {
+  background-color: #eef6f3;
+}
+.on-navy [data-variant="ghost"] {
+  color: #ffffff;
+}
+.on-navy [data-variant="ghost"]:hover {
+  background-color: rgb(255 255 255 / 0.12);
+}
+/* Sidebar and phone menu sheet: the deep green surface. Scrollbars follow it (inherited). */
+.on-navy {
+  scrollbar-color: rgb(255 255 255 / 0.28) transparent;
+}
+.on-navy :focus-visible {
+  outline-color: #a9e9b9; /* 10.3:1 on the sidebar green */
+}
+.hero :focus-visible {
+  outline-color: #ffffff;
+}
+
+/*
+ * Cek BMI filters: room for the drawn chevron and for "Semua kategori". Unlayered on purpose: the
+ * Select's px-3 and min-w-0 utilities would otherwise win over the layered rules.
+ */
+.bmi-tracker select.select-control {
+  padding-right: 2.25rem;
+}
+@media (min-width: 561px) {
+  .bmi-tracker .bmi-control--filter select {
+    min-width: 170px;
+  }
+}
+
+/* Printed weekly report: A4 landscape, no app chrome, colours kept for status labels. */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+
+  :root {
+    --bg: #ffffff;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    font-size: 11pt;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  [data-print="hide"] {
+    display: none !important;
+  }
+
+  /* The shell reserves room for the sidebar and the phone bars; paper has neither. */
+  [data-shell-main] {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .hero,
+  .hero * {
+    background: none !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+  }
+
+  .hero::after {
+    display: none;
+  }
+
+  .dt-scroll {
+    overflow: visible !important;
+    max-height: none !important;
+    border: 0 !important;
+  }
+
+  .dt thead {
+    display: table-header-group;
+  }
+
+  .dt tr {
+    break-inside: avoid;
+  }
+
+  .dt[data-sticky-first="true"] tr > :first-child,
+  .dt[data-sticky-header="true"] thead th {
+    position: static;
+    box-shadow: none;
+  }
+}
+
+/* ==========================================================================
+   Cek BMI tracker (DESIGN.md, "Cek BMI follows the CGK BMI prototype").
+   Everything is scoped to .bmi-tracker, so no other screen changes. The palette is the
+   prototype's; only text colours that failed WCAG AA were darkened (same hue), see the
+   "text" group below and components/bmi/palette.test.ts, which checks every pair.
+   ========================================================================== */
+@layer components {
+  .bmi-tracker {
+    min-width: 0;
+
+    /* Surfaces and lines (prototype). */
+    --bmi-lime: #a9da8b; /* the one small accent: the station dot in the banner */
+    --bmi-line: #e4ebee;
+    --bmi-line-cell: #dde6ea;
+    --bmi-line-row: #e8eef0;
+    --bmi-white: #ffffff;
+    --bmi-zebra: #fbfcfd;
+    --bmi-row-hover: #f5faf8;
+    --bmi-legend-bg: #fbfdfd;
+    --bmi-note-bg: #f5f8f9;
+    --bmi-switch-bg: #f2f5f6;
+    --bmi-head-group: #e6eef1;
+    --bmi-head-field: #f1f5f7;
+    --bmi-period-group: #e6f4ef;
+    --bmi-period-group-selected: #d5ede3;
+    --bmi-period-field: #eff7f3;
+    --bmi-period-field-selected: #ddf0e6;
+    --bmi-summary-group: #e7edf7;
+    --bmi-input: #fff9e9;
+    --bmi-input-hover: #fff0c9;
+    --bmi-input-row-hover: #fff6da;
+    --bmi-input-outline: #e7bc59;
+    --bmi-computed: #f2f8f6;
+    --bmi-shadow: 0 8px 28px rgb(17 47 62 / 0.055);
+
+    /* Text. The first value after each name is the prototype's; the darkened ones are marked. */
+    --bmi-text: #32485a;
+    --bmi-head: #4d6371;
+    --bmi-head-group-text: #3b5867;
+    --bmi-head-field-text: #526776;
+    --bmi-period-text: #146e5b;
+    --bmi-period-selected-text: #075f4d;
+    --bmi-summary-text: #405b7a;
+    --bmi-id: #0d7280;
+    --bmi-name: #23465b;
+    --bmi-name-hover: #007c69;
+    --bmi-computed-text: #51716e;
+    --bmi-label: #607686;
+    --bmi-count: #3b6170;
+    --bmi-strong: #3d6873;
+    --bmi-switch-active: #0b6657;
+    --bmi-muted: #62707f; /* was #718091 (4.0:1); labels, legend, subtitles, footers, metric foot */
+    --bmi-soft: #63727d; /* was #768793 (3.5:1); Coaching Evaluation Feedback and Result/Remarks */
+    --bmi-hint: #7f6838; /* was #c0a66f (2.1:1); the "+ isi" hint on a yellow cell */
+    --bmi-switch-text: #62707f; /* was #758695 (3.4:1) on the grey switch */
+    --bmi-value-good: #0b8268;
+    --bmi-value-late: #bb5252;
+    --bmi-value-above: #9e691e; /* was #b67922 (3.7:1) */
+
+    /* Badges: text on its tint. */
+    --bmi-normal: #087d5f;
+    --bmi-normal-bg: #e3f7ee;
+    --bmi-overweight: #995d0c;
+    --bmi-overweight-bg: #fff0cd;
+    --bmi-obesitas: #ac443d;
+    --bmi-obesitas-bg: #fee6e3;
+    --bmi-kurus: #576a9b;
+    --bmi-kurus-bg: #e9efff;
+    --bmi-late: #b44444;
+    --bmi-late-bg: #ffebe9;
+    --bmi-due: #95620f; /* was #a36b10 (4.0:1) */
+    --bmi-due-bg: #fff0cf;
+    --bmi-scheduled: #177a62; /* was #198369 (4.1:1) */
+    --bmi-scheduled-bg: #e5f5ec;
+    --bmi-pending: #5d6e78; /* was #778b96 (3.2:1) */
+    --bmi-pending-bg: #eef2f5;
+
+    /* Banner and profile panel. */
+    --bmi-hero-text: #dcebed; /* was #cfe3e5 (3.9:1 where the gradient is lightest) */
+    --bmi-panel-overline: #c8f2e0; /* was #b6ecd5 (4.4:1) */
+    --bmi-panel-text: #e1f3f0; /* was #d7efec */
+  }
+
+  /* ---- Hero ---------------------------------------------------------------- */
+  /* Same proportions as PageHeader's banner (min-h-32, 28/32 padding; 24/20 on phones). */
+  .bmi-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 128px;
+    padding: 28px 32px;
+  }
+  .bmi-hero-copy {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    max-width: 36rem;
+  }
+  .bmi-hero h1 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  .bmi-hero-meta {
+    margin: 6px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--bmi-hero-text);
+  }
+  .bmi-hero-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .bmi-hero-station {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 13px;
+    border: 1px solid rgb(191 241 217 / 0.34);
+    border-radius: 10px;
+    background: rgb(255 255 255 / 0.08);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #ffffff;
+  }
+  .bmi-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bmi-lime);
+  }
+
+  /* ---- Four counts --------------------------------------------------------- */
+  .bmi-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+  }
+  .bmi-metric {
+    position: relative;
+    min-width: 0;
+    min-height: 124px;
+    overflow: hidden;
+    padding: 17px 18px;
+    border: 1px solid var(--bmi-line);
+    border-radius: 14px;
+    background: var(--bmi-white);
+    box-shadow: var(--bmi-shadow);
+  }
+  .bmi-metric-label {
+    margin: 0;
+    padding-right: 44px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bmi-muted);
+  }
+  .bmi-metric-value {
+    margin: 12px 0 8px;
+    font-size: 31px;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .bmi-metric[data-tone="good"] .bmi-metric-value {
+    color: var(--bmi-value-good);
+  }
+  .bmi-metric[data-tone="late"] .bmi-metric-value {
+    color: var(--bmi-value-late);
+  }
+  .bmi-metric[data-tone="above"] .bmi-metric-value {
+    color: var(--bmi-value-above);
+  }
+  .bmi-metric-foot {
+    margin: 0;
+    font-size: 12px;
+    color: var(--bmi-muted);
+  }
+  .bmi-metric-bar {
+    height: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e9f0f1;
+  }
+  .bmi-metric-bar > i {
+    display: block;
+    height: 100%;
+    border-radius: 10px;
+    background: #128b74;
+  }
+  .bmi-metric-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #ecf5f1;
+    color: #078269;
+  }
+  .bmi-metric[data-tone="late"] .bmi-metric-icon {
+    background: #feeeee;
+    color: #b74b48;
+  }
+  .bmi-metric[data-tone="above"] .bmi-metric-icon {
+    background: #fff3db;
+    color: #bb7912;
+  }
+  .bmi-skeleton {
+    display: block;
+    border-radius: 6px;
+    background: var(--neutral-tint);
+  }
+
+  /* ---- Workspace ------------------------------------------------------------ */
+  .bmi-workspace {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--bmi-line);
+    border-radius: 15px;
+    background: var(--bmi-white);
+    box-shadow: var(--bmi-shadow);
+  }
+  .bmi-ws-head {
+    padding: 19px 20px 15px;
+    border-bottom: 1px solid var(--bmi-line);
+  }
+  .bmi-ws-title {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .bmi-ws-sub {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: var(--bmi-muted);
+  }
+  .bmi-ws-empty {
+    padding: 4px 20px 16px;
+  }
+  .bmi-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--bmi-line);
+  }
+  .bmi-control {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .bmi-controls .section-label {
+    color: var(--bmi-label);
+  }
+  .bmi-control--search {
+    flex: 1 1 180px;
+    min-width: 180px;
+    max-width: 285px;
+  }
+  /* Room for "BMI Cek ke-1 (Periode 12-25 Oct 2026) · sekarang" without clipping. */
+  .bmi-control--period {
+    min-width: 420px;
+  }
+  .bmi-control--filter select {
+    min-width: 125px;
+  }
+  .bmi-control--touch {
+    min-width: 190px;
+  }
+  .bmi-spacer {
+    flex: 1 1 0;
+  }
+  .bmi-switch {
+    display: inline-flex;
+    gap: 3px;
+    align-self: flex-end;
+    min-height: 40px;
+    padding: 3px;
+    border: 1px solid #e2eaed;
+    border-radius: 10px;
+    background: var(--bmi-switch-bg);
+  }
+  .bmi-switch button {
+    padding: 6px 11px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bmi-switch-text);
+    cursor: pointer;
+    transition: background-color 0.12s, color 0.12s;
+  }
+  .bmi-switch button:hover {
+    color: var(--bmi-switch-active);
+  }
+  .bmi-switch button[aria-pressed="true"] {
+    background: var(--bmi-white);
+    color: var(--bmi-switch-active);
+    box-shadow: 0 2px 8px rgb(35 59 65 / 0.08);
+  }
+  .bmi-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 18px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--bmi-line);
+    background: var(--bmi-legend-bg);
+    font-size: 12px;
+    color: var(--bmi-muted);
+  }
+  .bmi-legend-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 15px;
+    margin: 0;
+  }
+  .bmi-legend-mark {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    border-radius: 3px;
+  }
+  .bmi-legend-mark--input {
+    border: 1px solid #eecb65;
+    background: #fff0b9;
+  }
+  .bmi-legend-mark--formula {
+    border: 1px solid #abd4c8;
+    background: #dcefe8;
+  }
+  .bmi-legend-mark--link {
+    border: 1px solid #dae1e5;
+    background: #eff2f5;
+  }
+  .bmi-count {
+    font-weight: 600;
+    color: var(--bmi-count);
+  }
+  .bmi-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 13px 20px;
+    font-size: 12px;
+    color: var(--bmi-muted);
+  }
+  /* Phone: which check the cards below are for, kept in view while the list scrolls. */
+  .bmi-phone-period {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    margin: 0;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--bmi-line);
+    background: var(--bmi-white);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--bmi-strong);
+    overflow-wrap: anywhere;
+  }
+  .bmi-bottom strong {
+    font-weight: 600;
+    color: var(--bmi-strong);
+  }
+  .bmi-skip {
+    position: absolute;
+    z-index: 30;
+    top: 8px;
+    left: 12px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .bmi-skip:focus {
+    width: auto;
+    height: auto;
+    padding: 8px 12px;
+    clip-path: none;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    background: var(--bmi-white);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .bmi-table-region {
+    position: relative;
+  }
+
+  /* ---- The sheet ------------------------------------------------------------ */
+  .bmi-scroll {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    max-height: min(72vh, 640px);
+    overflow: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #b8cbd0 #f4f7f9;
+  }
+  .bmi-scroll::-webkit-scrollbar {
+    width: 10px;
+    height: 12px;
+  }
+  .bmi-scroll::-webkit-scrollbar-track {
+    background: #f4f7f9;
+  }
+  .bmi-scroll::-webkit-scrollbar-thumb {
+    border: 3px solid #f4f7f9;
+    border-radius: 9px;
+    background: #b7ccd0;
+  }
+  .bmi-scroll:focus-visible {
+    outline-offset: -2px;
+  }
+  .bmi-table {
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--bmi-text);
+  }
+  .bmi-table th,
+  .bmi-table td {
+    height: 44px;
+    padding: 0 11px;
+    overflow: hidden;
+    border-right: 1px solid var(--bmi-line-cell);
+    border-bottom: 1px solid var(--bmi-line-row);
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+    font-weight: 400;
+  }
+
+  /* Header: a group row and a field row, both frozen at the top. */
+  .bmi-table thead th {
+    position: sticky;
+    z-index: 5;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bmi-head);
+  }
+  .bmi-table thead tr.group th {
+    top: 0;
+    background: var(--bmi-head-group);
+    color: var(--bmi-head-group-text);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .bmi-table thead tr.fields th {
+    top: 44px;
+    background: var(--bmi-head-field);
+    color: var(--bmi-head-field-text);
+  }
+  .bmi-table thead tr.group th.period-head {
+    border-bottom: 2px solid #9bd0bc;
+    background: var(--bmi-period-group);
+    color: var(--bmi-period-text);
+    text-align: center;
+    /* "BMI Cek ke-3 (Periode 9-22 Nov 2026)" is written the way the owner writes it: no capitals, no tracking. */
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .bmi-table thead tr.group th.period-head .period-note {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .bmi-table thead tr.group th.period-head[data-selected] {
+    background: var(--bmi-period-group-selected);
+    color: var(--bmi-period-selected-text);
+    box-shadow: inset 0 3px 0 #0c9878;
+  }
+  .bmi-table thead tr.group th.summary-head {
+    background: var(--bmi-summary-group);
+    color: var(--bmi-summary-text);
+  }
+  .bmi-table thead tr.fields th.period-field {
+    background: var(--bmi-period-field);
+    text-align: center;
+  }
+  .bmi-table thead tr.fields th.period-field[data-selected] {
+    background: var(--bmi-period-field-selected);
+  }
+  .bmi-table .summary-tint {
+    border-left: 2px solid #c9d8e9;
+  }
+
+  /* The first three columns stay while the rest scrolls. 48 + 120 = 168. */
+  .bmi-table .sticky {
+    position: sticky;
+    z-index: 7;
+  }
+  .bmi-table .sticky1 {
+    left: 0;
+  }
+  .bmi-table .sticky2 {
+    left: 48px;
+  }
+  .bmi-table .sticky3 {
+    left: 168px;
+    box-shadow: 4px 0 7px -6px rgb(32 56 79 / 0.35);
+  }
+  .bmi-table thead th.sticky {
+    z-index: 12;
+  }
+  .bmi-table thead tr.group th.sticky {
+    background: var(--bmi-head-group);
+  }
+
+  /* Rows: zebra, hover, and the three kinds of cell. */
+  .bmi-table tbody tr {
+    background: var(--bmi-white);
+  }
+  .bmi-table tbody tr:nth-child(even) {
+    background: var(--bmi-zebra);
+  }
+  .bmi-table tbody tr > .sticky {
+    background: var(--bmi-white);
+  }
+  .bmi-table tbody tr:nth-child(even) > .sticky {
+    background: var(--bmi-zebra);
+  }
+  .bmi-table tbody tr:hover > td,
+  .bmi-table tbody tr:hover > th {
+    background: var(--bmi-row-hover);
+  }
+  .bmi-table td.center {
+    text-align: center;
+  }
+  .bmi-table td.numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .bmi-table tbody th.id {
+    color: var(--bmi-id);
+    font-weight: 600;
+  }
+  .bmi-table td.name {
+    padding: 0;
+    font-weight: 600;
+  }
+  .bmi-table td.feedback {
+    color: var(--bmi-soft);
+  }
+  .bmi-table td.computed {
+    background: var(--bmi-computed);
+    color: var(--bmi-computed-text);
+  }
+  /* A cell that is only read here (the Coaching Assessment check, entered in the Google Sheet). */
+  .bmi-table td.locked {
+    cursor: default;
+  }
+  .bmi-table td.editable {
+    padding: 0;
+    background: var(--bmi-input);
+    transition: background-color 0.12s;
+  }
+  .bmi-table tbody tr:hover > td.editable {
+    background: var(--bmi-input-row-hover);
+  }
+  .bmi-table tbody tr > td.editable:hover {
+    background: var(--bmi-input-hover);
+    box-shadow: inset 0 0 0 2px var(--bmi-input-outline);
+  }
+
+  /* A yellow cell is one button that fills it. */
+  .bmi-table .cell-btn {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 43px;
+    padding: 0 11px;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .bmi-table .cell-btn[data-empty]::after {
+    content: "+ isi";
+    font-size: 11px;
+    color: var(--bmi-hint);
+    opacity: 0;
+  }
+  .bmi-table td.editable:hover .cell-btn[data-empty]::after,
+  .bmi-table .cell-btn[data-empty]:focus-visible::after {
+    opacity: 1;
+  }
+  .bmi-table .name-btn {
+    display: block;
+    width: 100%;
+    height: 43px;
+    padding: 0 11px;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    line-height: 43px;
+    color: var(--bmi-name);
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .bmi-table .name-btn:hover {
+    color: var(--bmi-name-hover);
+    text-decoration: underline;
+  }
+  .bmi-table .cell-btn:focus-visible,
+  .bmi-table .name-btn:focus-visible,
+  .bmi-table .cell-toggle:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: -2px;
+  }
+  .bmi-table .cell-chip:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+  }
+
+  /* Free text: one line with an ellipsis; a toggle appears only when the text is clipped. */
+  .bmi-table td.text-cell {
+    padding: 0;
+  }
+  .bmi-table .cell-inner {
+    display: flex;
+    align-items: stretch;
+    min-height: 43px;
+  }
+  .bmi-table .cell-main {
+    display: block;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    padding: 0 8px 0 11px;
+    overflow: hidden;
+    font: inherit;
+    line-height: 43px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .bmi-table .cell-main[data-expanded] {
+    max-height: 18rem;
+    padding: 10px 11px 6px;
+    overflow: auto;
+    line-height: 1.5;
+    text-overflow: clip;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    user-select: text;
+    cursor: text;
+  }
+  .bmi-table .cell-inner[data-expanded] {
+    flex-direction: column;
+  }
+  .bmi-table .cell-toggle {
+    display: grid;
+    flex: 0 0 28px;
+    place-items: center;
+    border: 0;
+    border-left: 1px solid var(--bmi-line-row);
+    background: transparent;
+    color: var(--bmi-strong);
+    cursor: pointer;
+  }
+  .bmi-table .cell-toggle:hover {
+    background: rgb(15 110 90 / 0.09);
+  }
+  .bmi-table .cell-actions {
+    display: flex;
+    gap: 6px;
+    padding: 2px 8px 8px 11px;
+  }
+  .bmi-table .cell-chip {
+    min-height: 28px;
+    padding: 0 10px;
+    border: 1px solid #c5d4d6;
+    border-radius: 8px;
+    background: var(--bmi-white);
+    font-size: 11px;
+    font-weight: 600;
+    color: #2a4a58;
+    cursor: pointer;
+  }
+  .bmi-table .cell-chip:hover {
+    background: #f0f6f5;
+  }
+  @media (pointer: coarse) {
+    .bmi-table .cell-toggle {
+      flex-basis: 44px;
+    }
+    .bmi-table .cell-chip {
+      min-height: 36px;
+    }
+  }
+
+  /* ---- Status badges -------------------------------------------------------- */
+  .bmi-badge {
+    display: inline-block;
+    padding: 5px 7px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .bmi-badge--normal {
+    background: var(--bmi-normal-bg);
+    color: var(--bmi-normal);
+  }
+  .bmi-badge--overweight {
+    background: var(--bmi-overweight-bg);
+    color: var(--bmi-overweight);
+  }
+  .bmi-badge--obesitas {
+    background: var(--bmi-obesitas-bg);
+    color: var(--bmi-obesitas);
+  }
+  .bmi-badge--kurus {
+    background: var(--bmi-kurus-bg);
+    color: var(--bmi-kurus);
+  }
+  .bmi-badge--late {
+    background: var(--bmi-late-bg);
+    color: var(--bmi-late);
+  }
+  .bmi-badge--due {
+    background: var(--bmi-due-bg);
+    color: var(--bmi-due);
+  }
+  .bmi-badge--scheduled {
+    background: var(--bmi-scheduled-bg);
+    color: var(--bmi-scheduled);
+  }
+  .bmi-badge--pending {
+    background: var(--bmi-pending-bg);
+    color: var(--bmi-pending);
+  }
+
+  /* ---- Profile panel (right-hand, slides in) -------------------------------- */
+  .bmi-panel-root {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+  }
+  .bmi-panel-root:not([open]) {
+    display: none;
+  }
+  .bmi-panel-root::backdrop {
+    background: rgb(17 47 64 / 0.38);
+  }
+  .bmi-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(490px, 100vw);
+    height: 100%;
+    overflow: auto;
+    background: var(--bmi-white);
+    box-shadow: -12px 0 40px rgb(20 43 64 / 0.15);
+    animation: bmi-slide 0.23s ease;
+  }
+  @keyframes bmi-slide {
+    from {
+      transform: translateX(105%);
+    }
+    to {
+      transform: none;
+    }
+  }
+  .bmi-panel-head {
+    padding: 27px 29px 30px;
+    background: linear-gradient(120deg, #0e3549, #107363);
+    color: #ffffff;
+  }
+  .bmi-panel-close {
+    float: right;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin: -10px -12px 0 8px;
+    border: 1px solid rgb(255 255 255 / 0.36);
+    border-radius: 10px;
+    background: rgb(255 255 255 / 0.13);
+    color: #ffffff;
+    cursor: pointer;
+  }
+  .bmi-panel-close:hover {
+    background: rgb(255 255 255 / 0.24);
+  }
+  .bmi-panel-close:focus-visible {
+    outline-color: #ffffff;
+  }
+  .bmi-panel-overline {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bmi-panel-overline);
+  }
+  .bmi-panel-head h2 {
+    margin: 11px 0 7px;
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .bmi-panel-meta {
+    margin: 0;
+    font-size: 13px;
+    color: var(--bmi-panel-text);
+  }
+  .bmi-panel-body {
+    padding: 8px 28px 40px;
+  }
+  .bmi-panel .detail-section {
+    margin: 22px 0 10px;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
+    color: var(--bmi-muted);
+  }
+  .bmi-panel .detail-section-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 22px 0 10px;
+  }
+  .bmi-panel .detail-section-row .detail-section {
+    margin: 0;
+  }
+  .bmi-panel .detail-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid #c5d4d6;
+    border-radius: 8px;
+    background: var(--bmi-white);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2a4a58;
+    cursor: pointer;
+  }
+  .bmi-panel .detail-edit:hover {
+    border-color: var(--bmi-name-hover);
+    background: #f0f6f5;
+    color: var(--bmi-name-hover);
+  }
+  .bmi-panel .detail-edit:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+  .bmi-panel .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0;
+  }
+  .bmi-panel .detail-stat {
+    min-width: 0;
+    padding: 13px 15px;
+    border-radius: 10px;
+    background: var(--bmi-note-bg);
+  }
+  .bmi-panel .detail-stat dt {
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--bmi-muted);
+  }
+  .bmi-panel .detail-stat dd {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #284858;
+    overflow-wrap: anywhere;
+  }
+  .bmi-panel .detail-next {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .bmi-panel .detail-changed {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: var(--bmi-muted);
+  }
+  .bmi-panel .history {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bmi-panel .history-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 11px;
+    padding: 12px 13px;
+    border: 1px solid #e0e9eb;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  .bmi-panel .history-row[data-selected] {
+    border-color: #9bd0bc;
+    background: #f4fbf8;
+  }
+  .bmi-panel .history-row .left,
+  .bmi-panel .history-row .right {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+  .bmi-panel .history-row .right {
+    align-items: flex-end;
+    text-align: right;
+  }
+  .bmi-panel .history-row b {
+    font-weight: 600;
+  }
+  .bmi-panel .history-row small {
+    font-size: 12px;
+    color: var(--bmi-muted);
+  }
+  .bmi-panel .history-bmi {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: #2e675d;
+  }
+  .bmi-panel .note-box {
+    max-height: 180px;
+    padding: 13px;
+    overflow: auto;
+    border-radius: 10px;
+    background: var(--bmi-note-bg);
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4f6474;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .bmi-panel .note-box[data-empty] {
+    color: var(--bmi-muted);
+  }
+  .bmi-panel .note-box:focus-visible {
+    outline-offset: -2px;
+  }
+
+  /* ---- Confirmation toast --------------------------------------------------- */
+  .bmi-toast {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 90;
+    max-width: min(420px, 90vw);
+    padding: 13px 17px;
+    border-radius: 11px;
+    background: #173f45;
+    color: #ffffff;
+    font-size: 13px;
+    box-shadow: 0 10px 22px rgb(24 60 73 / 0.2);
+    opacity: 0;
+    transform: translateY(13px);
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
+    pointer-events: none;
+  }
+  .bmi-toast[data-shown] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---- Breakpoints of the prototype: 1180, 850, 560 ------------------------- */
+  @media (max-width: 1023px) {
+    /* 44px tap targets below 1024px (DESIGN.md). */
+    .bmi-switch {
+      min-height: 52px;
+    }
+    .bmi-switch button {
+      min-height: 44px;
+    }
+  }
+  @media (max-width: 1180px) {
+    .bmi-metrics {
+      gap: 10px;
+    }
+    .bmi-metric {
+      padding: 15px;
+    }
+  }
+  @media (max-width: 850px) {
+    .bmi-hero {
+      padding: 24px 20px;
+    }
+    .bmi-hero h1 {
+      font-size: 20px;
+      line-height: 28px;
+    }
+    .bmi-hero-actions {
+      justify-content: flex-start;
+    }
+    .bmi-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .bmi-controls {
+      gap: 10px;
+    }
+    .bmi-control--search {
+      max-width: none;
+    }
+    .bmi-ws-head,
+    .bmi-controls,
+    .bmi-legend,
+    .bmi-bottom {
+      padding-left: 14px;
+      padding-right: 14px;
+    }
+  }
+  @media (max-width: 639px) {
+    .bmi-toast {
+      right: 16px;
+      bottom: calc(var(--bottombar-height) + env(safe-area-inset-bottom) + 12px);
+      left: 16px;
+      max-width: none;
+    }
+  }
+  @media (max-width: 560px) {
+    .bmi-hero {
+      display: block;
+      min-height: 0;
+    }
+    .bmi-hero-actions {
+      margin-top: 16px;
+    }
+    .bmi-hero-station {
+      display: none;
+    }
+    .bmi-metrics {
+      gap: 8px;
+    }
+    .bmi-metric {
+      min-height: 115px;
+    }
+    .bmi-metric-value {
+      font-size: 27px;
+    }
+    .bmi-ws-title {
+      font-size: 16px;
+    }
+    .bmi-control--search,
+    .bmi-control--period {
+      flex-basis: 100%;
+      min-width: 100%;
+    }
+    .bmi-control--filter {
+      flex: 1 1 calc(50% - 8px);
+      min-width: calc(50% - 8px);
+    }
+    .bmi-control--filter select {
+      min-width: 0;
+    }
+    /* Touch Point values are longer than a half-width select can show ("Check-in Counter"): a row of its own. */
+    .bmi-control--touch {
+      flex-basis: 100%;
+      min-width: 100%;
+    }
+    .bmi-table-region[data-pending] {
+      display: none;
+    }
+    .bmi-panel-body {
+      padding-inline: 18px;
+    }
+    .bmi-panel-head {
+      padding: 22px 18px 24px;
+    }
+  }
+}
