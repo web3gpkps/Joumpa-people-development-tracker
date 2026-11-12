@@ -21,7 +21,7 @@ select vault.create_secret('<SYNC_SECRET>', 'pd_sync_secret', 'JOUMPA PD: bearer
 -- 2. Every-minute sync run. The lease in pd_sync_state makes overlapping runs harmless.
 select cron.schedule(
   'joumpa-pd-sync-every-minute',
-  '* * * * *',
+  '*/10 * * * *',
   $job$
     select net.http_post(
       url                  := (select decrypted_secret from vault.decrypted_secrets where name = 'pd_sync_run_url'),
